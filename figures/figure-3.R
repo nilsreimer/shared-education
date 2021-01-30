@@ -2,6 +2,12 @@ rm(list = ls())
 
 # Notes -------------------------------------------------------------------
 
+  #########################################################################
+  # To meet file size limits, we do not include the file                  #
+  # results/students/cq_ps_jj.rds in this repository. To reproduce this   #
+  # figure, rerun run_models_students.R and process_results_students.R    #
+  # before running this script.                                           #
+  #########################################################################
 
 # Library -----------------------------------------------------------------
 

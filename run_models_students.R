@@ -8,21 +8,12 @@ rm(list = ls())
   # Load packages
   library(tidyverse); library(rstan)
   
-  # Stan options
-  n_cores <- 8L
-  options(mc.cores = n_cores)
-  Sys.setenv(LOCAL_CPPFLAGS = '-march=native')
-  rstan_options(auto_write = FALSE)
+  # Options
+  outcomes <- c("cq", "oa", "tr", "wc", "em", "ia", "dp", "mb")
   seeds <- c(
     6924624, 2265293, 4307307, 3011054, 5129713, 3444155, 8629018, 3905061
   )
-  names(seeds) = c("cq", "oa", "tr", "em", "ia", "wc", "dp", "mb")
-  
-  # Command line arguments
-  args <- commandArgs(TRUE)
-  
-  # Environment
-  sessionInfo()
+  names(seeds) <- outcomes
   
 
 # Prepare -----------------------------------------------------------------
@@ -89,34 +80,39 @@ rm(list = ls())
   # Load model
   model <- stan_model("models/model_ordinal_students.stan")
 
-  # Run model
-  fit <- sampling(
-    model,
-    data = make_dlist(dl, args[1]),
-    iter = 750 + 4000/n_cores,
-    warmup = 750,
-    chains = n_cores,
-    # control = list(max_treedepth = 15),
-    pars = c("eta", "b_j_z", "b_k_z", "sep_imp"),
-    include = FALSE,
-    seed = seeds[args[1]]
-  )
-  
-  # Save results
-  write_rds(fit, glue::glue("results/stanfit/{args[1]}_students.rds"))
-
-  # Inspect inspect
-  check_hmc_diagnostics(fit)
-  print(
-    fit,
-    pars = c(
-      "c",
-      "b_time",
-      "z_time",
-      "b_sep",
-      "sigma_j",
-      "Rho_j",
-      "sigma_k",
-      "p"
+  # Run models
+  for (outcome in outcomes ) {
+    
+    # Run model
+    fit <- sampling(
+      model,
+      data = make_dlist(dl, outcome),
+      iter = 750 + 4000/8,
+      warmup = 750,
+      chains = 8,
+      cores = parallel::detectCores(),
+      pars = c("eta", "b_j_z", "b_k_z", "sep_imp"),
+      include = FALSE,
+      seed = seeds[outcome]
     )
-  )
+    
+    # Save results
+    write_rds(fit, glue::glue("results/stanfit/{outcome}_students.rds"))
+    
+    # Inspect model
+    check_hmc_diagnostics(fit)
+    print(
+      fit,
+      pars = c(
+        "c",
+        "b_time",
+        "z_time",
+        "b_sep",
+        "sigma_j",
+        "Rho_j",
+        "sigma_k",
+        "p"
+      )
+    )
+    
+  }

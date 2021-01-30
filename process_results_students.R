@@ -2,6 +2,11 @@ rm(list = ls())
 
 # Notes -------------------------------------------------------------------
 
+  #########################################################################
+  # To meet file size limits, we do not include the files                 #
+  # results/stanfit/{outcome}_students.rds in this repository. To run     #
+  # this script, rerun run_models_students.R first.                       #
+  #########################################################################
 
 # Library -----------------------------------------------------------------
 
