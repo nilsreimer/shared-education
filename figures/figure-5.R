@@ -67,7 +67,7 @@ rm(list = ls())
 # Figure 5 ----------------------------------------------------------------
 
   # Figure 5a
-  d_est %>% 
+  f5a <- d_est %>% 
     group_by(x_sep, x_time, outcome, name) %>% 
     summarise(
       m_est = median(m),
@@ -117,16 +117,36 @@ rm(list = ls())
       fill   = "Shared Education:"
     )
   
-  # Export
-  ggsave(
-    "figures/figure-5a.png", 
-    width = 15, height = 10.8, units = "cm",
-    dpi = 600, 
-    type = "cairo-png"
-  )
-    
   # Figure 5b
-  d_est %>% 
+  f5b <- d_est %>% 
+    distinct(name) %>% 
+    ggplot(., aes(y = fct_rev(name))) +
+    geom_text(
+      aes(label = fct_rev(name)),
+      x = 1,
+      size = 9/.pt,
+      hjust = 1
+    ) +
+    facet_grid(. ~ "") +
+    scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    theme_bw(base_size = 9, base_line_size = 0.25) +
+    theme(
+      legend.position = "none",
+      panel.border = element_blank(),
+      panel.grid = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      axis.title = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_text(size = rel(1)),
+      plot.margin = margin(4.5, 2, 4.5, 4.5, unit = "pt")
+    ) +
+    labs(
+      tag = "B"
+    )
+    
+  # Figure 5c
+  f5c <- d_est %>% 
     pivot_wider(
       names_from = x_time,
       names_prefix = "y_",
@@ -172,7 +192,7 @@ rm(list = ls())
         "1" = "No involvement"
       ),
       p = sign(.lower) == sign(.upper)
-    ) %>% # filter(x_sep == "Current involvement") %>% mutate_if(is.double, ~scales::number(., accuracy = 0.01)) %>% mutate(text = glue::glue("{d_est}, [{.lower}, {.upper}]")) %>% print(n = Inf)
+    ) %>% 
   ggplot(., aes(x = fct_rev(name), y = d_est)) +
     geom_hline(
       yintercept = 0,
@@ -206,19 +226,37 @@ rm(list = ls())
       panel.grid.major.x = element_blank(),
       axis.text = element_text(size = rel(1), colour = "black"),
       axis.title = element_text(size = rel(1), colour = "black"),
+      axis.text.y = element_blank(),
       strip.background = element_blank(),
-      strip.text = element_text(size = rel(1), colour = "black", hjust = 0)
+      strip.text = element_text(size = rel(1), colour = "black", hjust = 0),
+      plot.margin = margin(4.5, 4.5, 4.5, 0, unit = "pt")
     ) +
     labs(
-      tag = "B",
       x = NULL,
       y = expression(Delta~italic("Mean")~("Cohen's"~italic(d)))
     )
   
-  # Export
+  # Combine figures
+  f5a + f5b + f5c + plot_layout(
+    heights = c(10.8, 6.2), 
+    design = "
+    AAAA
+    BCCC
+    "
+  )
+  
+# Export ------------------------------------------------------------------
+  
+  # Save as .pdf
   ggsave(
-    "figures/figure-5b.png", 
-    width = 15, height = 6.2, units = "cm",
+    "figures/figure-5.pdf", 
+    width = 15, height = 17, units = "cm"
+  )
+  
+  # Save as .png
+  ggsave(
+    "figures/figure-5.png", 
+    width = 15, height = 17, units = "cm",
     dpi = 600, 
     type = "cairo-png"
   )
