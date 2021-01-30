@@ -27,7 +27,7 @@ rm(list = ls())
         -.draw,
         names_to = c("y"),
         names_pattern = "[:graph:]*\\[([0-9]*)\\]",
-        names_ptypes = list(y = integer()),
+        names_transform = list(y = as.integer),
         values_to = "c"
       ) %>% 
       mutate(y = y + 1L) %>% 
@@ -47,7 +47,7 @@ rm(list = ls())
         -.draw,
         names_to = c("parameter", "x_time"),
         names_pattern = "([:graph:]*)\\[([0-9]*)\\]",
-        names_ptypes = list(parameter = character(), x_time = integer()),
+        names_transform = list(parameter = as.character, x_time = as.integer),
         values_to = "estimate"
       ) %>% 
       pivot_wider(
@@ -68,7 +68,7 @@ rm(list = ls())
         -.draw,
         names_to = c("parameter", "jj"),
         names_pattern = "([:graph:]*)\\[([0-9]*)\\]",
-        names_ptypes = list(parameter = character(), jj = integer()),
+        names_transform = list(parameter = as.character, jj = as.integer),
         values_to = "estimate"
       ) %>% 
       pivot_wider(
@@ -85,7 +85,7 @@ rm(list = ls())
         -.draw,
         names_to = c("kk"),
         names_pattern = "[:graph:]*\\[([0-9]*)\\]",
-        names_ptypes = list(kk = integer()),
+        names_transform = list(kk = as.integer),
         values_to = "b_k_1"
       )
   }
@@ -98,10 +98,10 @@ rm(list = ls())
         -.draw,
         names_to = c("x_sep", "x_time", "y"),
         names_pattern = "p\\[([0-9]*),([0-9]*),([0-9]*)\\]",
-        names_ptypes = list(
-          x_sep = integer(), 
-          x_time = integer(),
-          y = integer()
+        names_transform = list(
+          x_sep = as.integer, 
+          x_time = as.integer,
+          y = as.integer
         ),
         values_to = "p"
       ) %>% 
