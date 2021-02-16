@@ -250,13 +250,13 @@ rm(list = ls())
   # Save as .pdf
   ggsave(
     "figures/figure-5.pdf", 
-    width = 15, height = 17, units = "cm"
+    width = 15.9, height = 18, units = "cm",
   )
   
   # Save as .png
   ggsave(
     "figures/figure-5.png", 
-    width = 15, height = 17, units = "cm",
+    width = 15.9, height = 18, units = "cm",
     dpi = 600, 
     type = "cairo-png"
   )

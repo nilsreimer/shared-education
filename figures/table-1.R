@@ -37,7 +37,7 @@ rm(list = ls())
     mutate(
       outcome = factor(
         outcome, 
-        levels = c("cq", "oa", "tr", "wc", "em", "ia", "dp", "mb")
+        levels = c("cq", "wc", "oa", "tr", "em", "ia", "dp", "mb")
       )
     )
   
@@ -51,7 +51,8 @@ rm(list = ls())
     summarise(r = cor(x, y, use = "pairwise")) %>%
     group_by(x_outcome, y_outcome) %>% 
     summarise(r = mean(r)) %>% 
-    spread(y_outcome, r)  
+    spread(y_outcome, r) %>% 
+    ungroup()
 
   # Calculate correlation coefficients (between time points)
   r_between <- dl %>% 
@@ -67,13 +68,17 @@ rm(list = ls())
     summarise(r = cor(x, y, use = "pairwise")) %>% 
     group_by(x_outcome, y_outcome) %>% 
     summarise(r = mean(r)) %>% 
-    spread(y_outcome, r)
+    spread(y_outcome, r) %>% 
     
     
 # Table 1 -----------------------------------------------------------------
 
   # Correlations
-  r_within %>% mutate_if(is.double, round, digits = 2)
+  r_within %>% 
+    mutate(across(where(is.double), ~scales::number(., accuracy = 0.01))) %>% 
+    mutate(across(where(is.character), ~str_replace(., "1.00", "-"))) %>% 
+    mutate(across(where(is.character), ~str_replace(., "0.", "."))) %>% 
+    write_excel_csv("figures/table-1a.csv")
     
   # M, SD
   dl %>% 
@@ -85,8 +90,9 @@ rm(list = ls())
     mutate_if(is.double, round, digits = 2) %>% 
     mutate_if(is.double, ~scales::number(., accuracy = 0.01)) %>% 
     mutate(
-      table = glue::glue("{M} ({SD})")
+      table = glue::glue("{M},{SD}")
     ) %>% 
     select(-M, -SD) %>% 
-    spread(outcome, table)
+    spread(outcome, table) %>% 
+    write_excel_csv("figures/table-1b.csv")
   

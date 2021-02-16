@@ -10,7 +10,7 @@ rm(list = ls())
   
   # List outcomes
   outcomes <- c("cq", "oa", "tr", "wc", "em", "ia", "dp", "mb")
-  outcome  <- "cq"
+  outcome  <- "tr"
   
   # Options
   J <- 1000L # n of students
@@ -49,7 +49,7 @@ rm(list = ls())
 # Simulate ----------------------------------------------------------------
 
   # Set seed
-  set.seed(5727093)
+  set.seed(1406391)
   
   # Simulate J students
   for (i in 1:4000) {
@@ -184,35 +184,7 @@ rm(list = ls())
       .lower = quantile(value, 0.025),
       .upper = quantile(value, 0.975)
     ) %>% 
-    mutate_if(is.double, ~round(. * 1000))
-  
-  # Summarize
-  d_est %>% 
-    pivot_longer(
-      starts_with("p_"),
-      names_to = "parameter",
-      values_to = "value"
-    ) %>% 
-    group_by(.draw, x_sep, parameter) %>% 
-    summarise(value = mean(value)) %>% 
-    group_by(.draw) %>% 
-    summarise(
-      d_higher = value[4] - value[1],
-      d_same = value[6] - value[3],
-      d_lower = value[5] - value[2]
-    ) %>% 
-    pivot_longer(
-      starts_with("d_"),
-      names_to = "parameter",
-      values_to = "value"
-    ) %>% 
-    group_by(parameter) %>% 
-    summarise(
-      p_est = median(value),
-      .lower = quantile(value, 0.025),
-      .upper = quantile(value, 0.975)
-    ) %>% 
-    mutate_if(is.double, ~round(. * 1000))
+    mutate_if(is.double, ~ceiling(. * 1000))
   
   # Summarize
   d_est %>% 
@@ -236,4 +208,4 @@ rm(list = ls())
       .lower = quantile(estimate, 0.025),
       .upper = quantile(estimate, 0.975)
     ) %>% 
-    mutate_if(is.double, ~round(. * 1000))
+    mutate_if(is.double, ~ceiling(. * 1000))
