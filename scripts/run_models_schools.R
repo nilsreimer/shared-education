@@ -62,7 +62,7 @@ rm(list = ls())
 
 
 # Estimate ----------------------------------------------------------------
-  
+
   # Load model
   model <- stan_model("models/model_ordinal_schools.stan")
 

@@ -71,14 +71,14 @@ rm(list = ls())
     spread(y_outcome, r) %>% 
     
     
-# Table 1 -----------------------------------------------------------------
+# Table 2 -----------------------------------------------------------------
 
   # Correlations
   r_within %>% 
     mutate(across(where(is.double), ~scales::number(., accuracy = 0.01))) %>% 
     mutate(across(where(is.character), ~str_replace(., "1.00", "-"))) %>% 
     mutate(across(where(is.character), ~str_replace(., "0.", "."))) %>% 
-    write_excel_csv("figures/table-1a.csv")
+    write_excel_csv("figures/table-2a.csv")
     
   # M, SD
   dl %>% 
@@ -94,5 +94,5 @@ rm(list = ls())
     ) %>% 
     select(-M, -SD) %>% 
     spread(outcome, table) %>% 
-    write_excel_csv("figures/table-1b.csv")
+    write_excel_csv("figures/table-2b.csv")
   

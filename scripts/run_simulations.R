@@ -10,7 +10,7 @@ rm(list = ls())
   
   # List outcomes
   outcomes <- c("cq", "oa", "tr", "wc", "em", "ia", "dp", "mb")
-  outcome  <- "tr"
+  outcome  <- "em"
   
   # Options
   J <- 1000L # n of students
@@ -44,7 +44,6 @@ rm(list = ls())
   ps_j <- extract(fit, pars = c("sigma_j", "Rho_j"))
   ps_k <- extract(fit, pars = c("sigma_k"))
   
-
 
 # Simulate ----------------------------------------------------------------
 
@@ -168,23 +167,6 @@ rm(list = ls())
         exp(p_10_2 + p_12_1)
     ) %>% 
     select(.draw, jj, kk, x_sep, p_higher, p_same, p_lower)
-
-  # Summarize
-  d_est %>% 
-    pivot_longer(
-      starts_with("p_"),
-      names_to = "parameter",
-      values_to = "value"
-    ) %>% 
-    group_by(.draw, x_sep, parameter) %>% 
-    summarise(value = mean(value)) %>% 
-    group_by(x_sep, parameter) %>%
-    summarise(
-      p_est = median(value),
-      .lower = quantile(value, 0.025),
-      .upper = quantile(value, 0.975)
-    ) %>% 
-    mutate_if(is.double, ~ceiling(. * 1000))
   
   # Summarize
   d_est %>% 
