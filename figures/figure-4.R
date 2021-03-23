@@ -67,6 +67,12 @@ rm(list = ls())
       .upper = quantile(m, 0.975)
     ) %>% 
   ggplot(., aes(x = x_time, y = m_est, group = x_sep)) +
+    geom_vline(
+      xintercept = 10L,
+      linetype = "dashed",
+      colour = "black",
+      size = 0.25
+    ) +
     geom_ribbon(
       aes(ymin = .lower, ymax = .upper, fill = x_sep),
       alpha = 0.35
